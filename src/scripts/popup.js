@@ -1,4 +1,34 @@
-import test from "./utils/test";
+import React from "react";
+import ReactDOM from "react-dom";
 
-test();
-console.log("lolwut popup!");
+import App from "./components/App";
+import Store from "./utils/store";
+
+const app = document.getElementById("app");
+const appState = new Store();
+
+chrome.storage.sync.get("state", items => {
+  const prevState = items.state;
+
+  if (prevState) {
+    // rehydrate
+    appState.set(prevState);
+  }
+
+  ReactDOM.render(<App appState={appState} />, app);
+});
+
+// communicate with the background script
+const port = chrome.runtime.connect();
+
+window.addEventListener(
+  "unload",
+  function(event) {
+    console.log("reached");
+    const state = appState.get();
+    console.log("state", state);
+
+    port.postMessage({ type: "closed", state });
+  },
+  true
+);

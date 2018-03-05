@@ -5,10 +5,12 @@ import runSequence from "run-sequence";
 import es from "event-stream";
 import source from "vinyl-source-stream";
 import browserify from "browserify";
+import gulpif from "gulp-if";
 
 const $ = gulpLoadPlugins();
 
 const target = process.env.TARGET || "firefox";
+const isProduction = process.env.NODE_ENV === "production";
 
 gulp.task("extras", () => {
   return gulp
@@ -42,28 +44,23 @@ gulp.task(
   })
 );
 
-// gulp.task("images", () => {
-//   return gulp
-//     .src("src/images/**/*")
-//     .pipe(
-//       $.if(
-//         $.if.isFile,
-//         $.cache(
-//           $.imagemin({
-//             progressive: true,
-//             interlaced: true,
-//             // don't remove IDs from SVGs, they are often used
-//             // as hooks for embedding and styling
-//             svgoPlugins: [{ cleanupIDs: false }]
-//           })
-//         ).on("error", function(err) {
-//           console.log(err);
-//           this.end();
-//         })
-//       )
-//     )
-//     .pipe(gulp.dest(`dist/${target}/images`));
-// });
+gulp.task("images", () => {
+  return gulp
+    .src("src/images/**/*")
+    .pipe(
+      $.if(
+        $.if.isFile,
+        $.imagemin({
+          progressive: true,
+          interlaced: true,
+          // don't remove IDs from SVGs, they are often used
+          // as hooks for embedding and styling
+          svgoPlugins: [{ cleanupIDs: false }]
+        })
+      )
+    )
+    .pipe(gulp.dest(`dist/${target}/images`));
+});
 
 gulp.task("styles", () => {
   return gulp
@@ -86,19 +83,16 @@ gulp.task("html", ["styles"], () => {
 });
 
 gulp.task("babel", () => {
-  let files = [
-    "background.js",
-    "contentscript.js",
-    "popup.js",
-    "livereload.js"
-  ];
+  let files = ["background.js", "contentscript.js", "popup.js"];
 
   let tasks = files.map(file => {
     return browserify({
       entries: "./src/scripts/" + file,
       debug: true
     })
-      .transform("babelify", { presets: ["es2015"] })
+      .transform("babelify", {
+        presets: ["es2015", "es2017", "stage-0", "react"]
+      })
       .bundle()
       .pipe(source(file))
       .pipe(gulp.dest(`dist/${target}/scripts`));
@@ -109,7 +103,7 @@ gulp.task("babel", () => {
 
 gulp.task("clean", del.bind(null, [".tmp", "dist"]));
 
-gulp.task("watch", ["lint", "babel", "styles"], () => {
+gulp.task("watch", ["lint", "babel", "styles", "manifest"], () => {
   $.livereload.listen();
 
   gulp
@@ -117,13 +111,14 @@ gulp.task("watch", ["lint", "babel", "styles"], () => {
       "src/*.html",
       "src/scripts/**/*.js",
       "src/images/**/*",
-      "src/styles/**/*",
-      "src/_locales/**/*.json"
+      "src/styles/**/*"
     ])
     .on("change", $.livereload.reload);
 
-  gulp.watch("src/scripts.babel/**/*.js", ["lint", "babel"]);
-  gulp.watch("src/styles.scss/**/*.scss", ["styles"]);
+  gulp.watch("src/scripts/**/*.js", ["lint", "babel"]);
+  gulp.watch("src/styles/**/*.scss", ["styles"]);
+  gulp.watch("src/*.html", ["html"]);
+  gulp.watch("manifests/**/*.json", ["manifest"]);
 });
 
 gulp.task("size", () => {
@@ -138,8 +133,20 @@ gulp.task("package", function() {
     .pipe(gulp.dest("package"));
 });
 
+gulp.task("manifest", () => {
+  return gulp
+    .src(`manifests/${target}/manifest.json`)
+    .pipe(gulp.dest(`dist/${target}`));
+});
+
 gulp.task("build", cb => {
-  runSequence("lint", "babel", ["html", "extras"], "size", cb);
+  runSequence(
+    "lint",
+    "babel",
+    ["html", "manifest", "extras", "images"],
+    "size",
+    cb
+  );
 });
 
 gulp.task("default", ["clean"], cb => {
