@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import App from "./components/App";
-import Store from "./utils/store";
+import { Store, StateProvider } from "./utils/store";
 
 const app = document.getElementById("app");
 const appState = new Store();
@@ -15,7 +15,12 @@ chrome.storage.sync.get("state", items => {
     appState.set(prevState);
   }
 
-  ReactDOM.render(<App appState={appState} />, app);
+  ReactDOM.render(
+    <StateProvider appState={appState}>
+      <App />
+    </StateProvider>,
+    app
+  );
 });
 
 // communicate with the background script

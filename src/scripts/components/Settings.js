@@ -1,6 +1,8 @@
 import React from "react";
 
-export default class Settings extends React.Component {
+import { withState } from "../utils/store";
+
+class Settings extends React.Component {
   constructor(props) {
     super(props);
     const state = props.appState.get();
@@ -43,3 +45,5 @@ export default class Settings extends React.Component {
     );
   }
 }
+
+export default withState(Settings);

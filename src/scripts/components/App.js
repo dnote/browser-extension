@@ -3,7 +3,9 @@ import React from "react";
 import Header from "./Header";
 import Settings from "./Settings";
 
-export default class App extends React.Component {
+import { withState } from "../utils/store";
+
+class App extends React.Component {
   componentDidMount() {
     const { appState } = this.props;
 
@@ -19,8 +21,10 @@ export default class App extends React.Component {
       <div>
         <Header />
 
-        <Settings appState={appState} />
+        <Settings />
       </div>
     );
   }
 }
+
+export default withState(App);
