@@ -1,30 +1,68 @@
 import React from "react";
+import { connect } from "react-redux";
+import classnames from "classnames";
 
 import Header from "./Header";
+import Home from "./Home";
 import Settings from "./Settings";
-
-import { withState } from "../utils/store";
+import Login from "./Login";
+import Menu from "./Menu";
 
 class App extends React.Component {
-  componentDidMount() {
-    const { appState } = this.props;
+  constructor(props) {
+    super(props);
 
-    console.log("initial appState", appState.get());
-
-    appState.set({ what: 1234 });
+    this.state = {
+      isShowingMenu: false
+    };
   }
 
+  componentDidMount() {}
+
+  toggleMenu = () => {
+    this.setState(prevState => {
+      return {
+        isShowingMenu: !prevState.isShowingMenu
+      };
+    });
+  };
+
+  renderRoutes = path => {
+    console.log("rendering", path);
+    switch (path) {
+      case "/settings":
+        return <Settings />;
+      case "/login":
+        return <Login />;
+      default:
+        return <Home />;
+    }
+  };
+
   render() {
-    const { appState } = this.props;
+    const { appState, location } = this.props;
+    const { isShowingMenu } = this.state;
+
+    const { path } = location;
 
     return (
-      <div>
-        <Header />
+      <div className="container">
+        <Header toggleMenu={this.toggleMenu} isShowingMenu={isShowingMenu} />
 
-        <Settings />
+        {isShowingMenu && <Menu toggleMenu={this.toggleMenu} />}
+
+        <main>
+          {this.renderRoutes(path)}
+        </main>
       </div>
     );
   }
 }
 
-export default withState(App);
+function mapStateToProps(state) {
+  return {
+    location: state.location
+  };
+}
+
+export default connect(mapStateToProps)(App);

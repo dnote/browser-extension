@@ -64,7 +64,7 @@ gulp.task("images", () => {
 
 gulp.task("styles", () => {
   return gulp
-    .src("src/styles.scss/*.scss")
+    .src("src/styles/*.scss")
     .pipe($.plumber())
     .pipe(
       $.sass
@@ -75,7 +75,7 @@ gulp.task("styles", () => {
         })
         .on("error", $.sass.logError)
     )
-    .pipe(gulp.dest("src/styles"));
+    .pipe(gulp.dest(`dist/${target}/styles`));
 });
 
 gulp.task("html", ["styles"], () => {

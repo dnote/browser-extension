@@ -1,39 +1,45 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import thunkMiddleware from "redux-thunk";
+import createLogger from "redux-logger";
 
+import rootReducer from "./reducers";
 import App from "./components/App";
-import { Store, StateProvider } from "./utils/store";
 
-const app = document.getElementById("app");
-const appState = new Store();
-
-chrome.storage.sync.get("state", items => {
-  const prevState = items.state;
-
-  if (prevState) {
-    // rehydrate
-    appState.set(prevState);
-  }
-
-  ReactDOM.render(
-    <StateProvider appState={appState}>
-      <App />
-    </StateProvider>,
-    app
-  );
-});
-
-// communicate with the background script
 const port = chrome.runtime.connect();
 
-window.addEventListener(
-  "unload",
-  function(event) {
-    console.log("reached");
-    const state = appState.get();
-    console.log("state", state);
+chrome.storage.sync.get("state", items => {
+  let initialState;
 
-    port.postMessage({ type: "closed", state });
-  },
-  true
-);
+  const prevState = items.state;
+  if (prevState) {
+    // rehydrate
+    initialState = prevState;
+  }
+
+  const store = createStore(
+    rootReducer,
+    initialState,
+    compose(applyMiddleware(thunkMiddleware, createLogger))
+  );
+
+  ReactDOM.render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById("app")
+  );
+
+  // persist state on popup close
+  window.addEventListener(
+    "unload",
+    function(event) {
+      const state = store.getState();
+
+      port.postMessage({ type: "closed", state });
+    },
+    true
+  );
+});

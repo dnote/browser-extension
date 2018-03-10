@@ -1,15 +1,15 @@
 import React from "react";
 
-import { withState } from "../utils/store";
-
 class Settings extends React.Component {
   constructor(props) {
+    // super(props);
+    // const state = props.appState.get();
+    //
+    // this.state = {
+    //   apiKey: state.apiKey
+    // };
     super(props);
-    const state = props.appState.get();
-
-    this.state = {
-      apiKey: state.apiKey
-    };
+    this.state = { apiKey: "" };
   }
 
   handleSave = e => {
@@ -46,4 +46,4 @@ class Settings extends React.Component {
   }
 }
 
-export default withState(Settings);
+export default Settings;

@@ -1,0 +1,91 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-image: initial;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+  font-size: 1.4rem;
+  text-decoration: none;
+  padding: 11px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .icon {
+    margin-right: 3px;
+  }
+}
+
+.button-first {
+  color: #ffffff;
+  background-color: #333745;
+
+  &:hover {
+    color: #ffffff;
+    background-color: #252833;
+    box-shadow: 0px 0px 4px 2px #cacaca;
+  }
+}
+
+.button-first-outline {
+  background: transparent;
+  border-color: #333745;
+  color: #333744;
+
+  &:hover {
+    color: #333744;
+  }
+}
+
+.button-second {
+  background: white;
+  color: #343a40;
+
+  &:hover {
+    color: #343a40;
+  }
+}
+
+.button-third {
+  color: #ffffff;
+  background-color: #4577cc;
+
+  &:hover {
+    color: #ffffff;
+    background-color: #245fc5;
+    box-shadow: 0px 0px 4px 2px #cacaca;
+  }
+}
+
+.button-outline {
+  color: #0366d6;
+  background-color: #fff;
+  border: 2px solid #0366d6;
+}
+
+.button ~ .button {
+  margin-left: 10px;
+}
+
+.button-small {
+  padding: 5px 14px;
+}
