@@ -3,7 +3,7 @@ import React from "react";
 export default () => {
   return (
     <svg
-      enable-background="new 0 0 24 24"
+      enableBackground="new 0 0 24 24"
       id="Layer_1"
       version="1.0"
       viewBox="0 0 24 24"
@@ -13,8 +13,8 @@ export default () => {
       <line
         fill="none"
         stroke="#ffffff"
-        stroke-miterlimit="10"
-        stroke-width="2"
+        strokeMiterlimit="10"
+        strokeWidth="2"
         x1="2"
         x2="22"
         y1="12"
@@ -23,8 +23,8 @@ export default () => {
       <line
         fill="none"
         stroke="#ffffff"
-        stroke-miterlimit="10"
-        stroke-width="2"
+        strokeMiterlimit="10"
+        strokeWidth="2"
         x1="2"
         x2="22"
         y1="6"
@@ -33,8 +33,8 @@ export default () => {
       <line
         fill="none"
         stroke="#ffffff"
-        stroke-miterlimit="10"
-        stroke-width="2"
+        strokeMiterlimit="10"
+        strokeWidth="2"
         x1="2"
         x2="22"
         y1="18"

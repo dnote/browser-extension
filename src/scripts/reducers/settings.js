@@ -1,4 +1,4 @@
-import { RECEIVE_USER } from "../actions/settings";
+import { UPDATE } from "../actions/settings";
 
 const initialState = {
   apiKey: ""
@@ -6,10 +6,10 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case RECEIVE_USER:
+    case UPDATE:
       return {
         ...state,
-        user: action.data.user
+        ...action.data.settings
       };
     default:
       return state;

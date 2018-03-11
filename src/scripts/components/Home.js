@@ -9,7 +9,10 @@ export default () => {
 
       <p className="lead">A home for your engineering microlesson</p>
 
-      <Link to="/login" className="button button-first button-small login-btn">
+      <Link
+        to="/settings"
+        className="button button-first button-small login-btn"
+      >
         Login
       </Link>
 

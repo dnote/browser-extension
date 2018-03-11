@@ -5,7 +5,6 @@ import classnames from "classnames";
 import Header from "./Header";
 import Home from "./Home";
 import Settings from "./Settings";
-import Login from "./Login";
 import Menu from "./Menu";
 
 class App extends React.Component {
@@ -16,8 +15,6 @@ class App extends React.Component {
       isShowingMenu: false
     };
   }
-
-  componentDidMount() {}
 
   toggleMenu = () => {
     this.setState(prevState => {
@@ -32,8 +29,6 @@ class App extends React.Component {
     switch (path) {
       case "/settings":
         return <Settings />;
-      case "/login":
-        return <Login />;
       default:
         return <Home />;
     }

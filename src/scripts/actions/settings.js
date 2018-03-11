@@ -1,8 +1,8 @@
-export const RECEIVE_USER = "settings/RECEIVE_USER";
+export const UPDATE = "settings/UPDATE";
 
-export function receiveUser(user) {
+export function updateSettings(settings) {
   return {
-    type: RECEIVE_USER,
-    data: { user }
+    type: UPDATE,
+    data: { settings }
   };
 }

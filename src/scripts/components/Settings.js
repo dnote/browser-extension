@@ -1,49 +1,89 @@
 import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { updateSettings } from "../actions/settings";
 
 class Settings extends React.Component {
   constructor(props) {
-    // super(props);
-    // const state = props.appState.get();
-    //
-    // this.state = {
-    //   apiKey: state.apiKey
-    // };
     super(props);
-    this.state = { apiKey: "" };
+    this.state = { apiKey: props.settings.apiKey, successMessage: "" };
   }
 
   handleSave = e => {
     e.preventDefault();
 
-    const { appState } = this.props;
+    const { doUpdateSettings } = this.props;
     const { apiKey } = this.state;
 
-    appState.set({ apiKey });
+    this.setState({ successMessage: "" }, () => {
+      doUpdateSettings({ apiKey });
+
+      this.setState({
+        successMessage: "Saved"
+      });
+    });
   };
 
   render() {
-    const { apiKey } = this.state;
+    const { apiKey, successMessage } = this.state;
 
     return (
-      <div>
-        <form onSubmit={this.handleSave}>
-          <label>
-            Your API Key
-            <input
-              type="password"
-              value={apiKey}
-              onChange={e => {
-                const val = e.target.value;
+      <div className="settings">
+        {successMessage &&
+          <div className="message">
+            {successMessage}
+          </div>}
 
-                this.setState({ apiKey: val });
-              }}
-            />
-            <input type="submit" value="submit" />
+        <form onSubmit={this.handleSave}>
+          <label className="label" htmlFor="api-key">
+            Your API Key
           </label>
+          <input
+            id="api-key"
+            className="input"
+            type="password"
+            value={apiKey}
+            onChange={e => {
+              const val = e.target.value;
+
+              this.setState({ apiKey: val });
+            }}
+          />
+
+          <p className="hint">
+            Sign up <a href="https://dnote.io/cloud">here</a> or get it from
+            your profile page.
+          </p>
+
+          <div className="actions">
+            <input
+              type="submit"
+              value="Confirm"
+              className="button button-small button-first"
+            />
+          </div>
         </form>
       </div>
     );
   }
 }
 
-export default Settings;
+function mapStateToProps(state) {
+  return {
+    settings: state.settings
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    ...bindActionCreators(
+      {
+        doUpdateSettings: updateSettings
+      },
+      dispatch
+    )
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

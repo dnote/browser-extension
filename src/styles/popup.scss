@@ -22,6 +22,15 @@ main {
   width: 345px;
   position: relative;
 }
+.input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+.message {
+  color: #2cae2c;
+  margin-bottom: 6px;
+}
 
 .menu {
   position: absolute;
@@ -99,5 +108,25 @@ main {
         color: inherit;
       }
     }
+  }
+}
+
+.settings {
+  padding: 15px 0;
+
+  .label {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  .actions {
+    margin-top: 12px;
+  }
+
+  .hint {
+    font-size: 1.4rem;
+    color: #7e7e7e;
+    margin-top: 4px;
   }
 }
