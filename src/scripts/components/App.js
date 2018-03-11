@@ -5,6 +5,7 @@ import classnames from "classnames";
 import Header from "./Header";
 import Home from "./Home";
 import Settings from "./Settings";
+import Composer from "./Composer";
 import Menu from "./Menu";
 
 class App extends React.Component {
@@ -24,21 +25,28 @@ class App extends React.Component {
     });
   };
 
-  renderRoutes = path => {
+  renderRoutes = (path, loggedIn) => {
     console.log("rendering", path);
     switch (path) {
       case "/settings":
         return <Settings />;
-      default:
+      case "/":
+        if (loggedIn) {
+          return <Composer />;
+        }
+
         return <Home />;
+      default:
+        return <div>Not found</div>;
     }
   };
 
   render() {
-    const { appState, location } = this.props;
+    const { location, settings } = this.props;
     const { isShowingMenu } = this.state;
 
     const { path } = location;
+    const isLoggedIn = Boolean(settings.apiKey);
 
     return (
       <div className="container">
@@ -47,7 +55,7 @@ class App extends React.Component {
         {isShowingMenu && <Menu toggleMenu={this.toggleMenu} />}
 
         <main>
-          {this.renderRoutes(path)}
+          {this.renderRoutes(path, isLoggedIn)}
         </main>
       </div>
     );
@@ -56,7 +64,8 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    location: state.location
+    location: state.location,
+    settings: state.settings
   };
 }
 

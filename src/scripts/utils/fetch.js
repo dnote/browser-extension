@@ -1,3 +1,5 @@
+import qs from "qs";
+
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -16,15 +18,24 @@ function request(url, options) {
   return fetch(url, options).then(checkStatus).then(parseJSON);
 }
 
-export function post(url, data) {
+export function post(url, data, options = {}) {
+  console.log("@@@@@@@@@@@@@@@", data);
   return request(url, {
     method: "POST",
-    body: data
+    body: JSON.stringify(data),
+    ...options
   });
 }
 
-export function get(url) {
-  return request(url, {
-    method: "GET"
+export function get(url, options = {}) {
+  let endpoint = url;
+
+  if (options.params) {
+    endpoint = `${endpoint}?${qs.stringify(options.params)}`;
+  }
+
+  return request(endpoint, {
+    method: "GET",
+    ...options
   });
 }
