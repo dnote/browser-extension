@@ -4,11 +4,8 @@ import { bindActionCreators } from "redux";
 
 import BookSelector from "./BookSelector";
 
-import {
-  fetchBooks,
-  updateDraftContent,
-  createNote
-} from "../actions/composer";
+import { updateDraftContent, createNote } from "../actions/composer";
+import { fetchBooks, selectBook, addBook } from "../actions/books";
 
 class Composer extends React.Component {
   componentDidMount() {
@@ -16,34 +13,96 @@ class Composer extends React.Component {
     const { apiKey } = settings;
 
     doFetchBooks(apiKey);
+
+    this.focusInput();
   }
+
+  focusInput = () => {
+    const currentBook = this.getCurrentBook();
+
+    if (currentBook.id) {
+      this.focusContent();
+    } else {
+      this.focusBookSelector();
+    }
+  };
+
+  focusBookSelector = () => {
+    this.bookSelectorEl.focus();
+  };
+
+  focusContent = () => {
+    const len = this.contentEl.value.length;
+
+    this.contentEl.focus();
+    this.contentEl.setSelectionRange(len, len);
+  };
 
   handleSubmit = e => {
     e.preventDefault();
 
-    const { doCreateNote, settings, draft } = this.props;
+    const { doCreateNote, settings, content } = this.props;
 
-    doCreateNote(settings.apiKey, "js", draft.content);
+    const currentBook = this.getCurrentBook();
+
+    doCreateNote(settings.apiKey, currentBook.label, content);
+  };
+
+  getCurrentBook = () => {
+    const { books } = this.props;
+
+    for (let i = 0; i < books.length; i++) {
+      const book = books[i];
+
+      if (book.selected) {
+        return book;
+      }
+    }
+
+    return {};
   };
 
   render() {
-    const { books, draft, doUpdateDraftContent } = this.props;
+    const {
+      books,
+      content,
+      doUpdateDraftContent,
+      doSelectBook,
+      doAddBook
+    } = this.props;
+    const currentBook = this.getCurrentBook();
+
+    const currentBookId = currentBook.id;
 
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <BookSelector books={books.items} />
+      <div className="composer">
+        <form onSubmit={this.handleSubmit} className="form">
+          <BookSelector
+            books={books}
+            currentBookId={currentBookId}
+            onChange={doSelectBook}
+            onBlur={this.focusContent}
+            onAddBook={doAddBook}
+            selectorRef={el => {
+              this.bookSelectorEl = el;
+            }}
+          />
 
           <textarea
+            className="content"
+            placeholder="What did you learn?"
             onChange={e => {
               const val = e.target.value;
 
               doUpdateDraftContent(val);
             }}
-            value={draft.content}
+            value={content}
+            ref={el => {
+              this.contentEl = el;
+            }}
           />
 
-          <input type="submit" value="Save" />
+          <input type="submit" value="Write" className="submit-button" />
         </form>
       </div>
     );
@@ -52,8 +111,8 @@ class Composer extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    books: state.composer.books,
-    draft: state.composer.draft,
+    books: state.books.items,
+    content: state.composer.content,
     settings: state.settings
   };
 }
@@ -63,6 +122,8 @@ function mapDispatchToProps(dispatch) {
     ...bindActionCreators(
       {
         doFetchBooks: fetchBooks,
+        doSelectBook: selectBook,
+        doAddBook: addBook,
         doUpdateDraftContent: updateDraftContent,
         doCreateNote: createNote
       },

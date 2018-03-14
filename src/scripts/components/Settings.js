@@ -40,6 +40,7 @@ class Settings extends React.Component {
             Your API Key
           </label>
           <input
+            autoFocus
             id="api-key"
             className="input"
             type="password"
