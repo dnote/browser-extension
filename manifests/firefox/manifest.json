@@ -25,5 +25,13 @@
     "scripts": ["scripts/background.js"]
   },
   "content_scripts": [],
-  "permissions": ["storage", "*://127.0.0.1:5000/*", "*://api.dnote.io/*"]
+  "permissions": ["storage", "*://127.0.0.1:5000/*", "*://api.dnote.io/*"],
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+D",
+        "mac": "MacCtrl+D"
+      }
+    }
+  }
 }
