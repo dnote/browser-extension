@@ -50,8 +50,9 @@ chrome.storage.sync.get("state", items => {
     "unload",
     function(event) {
       const state = store.getState();
+      const bpWindow = chrome.extension.getBackgroundPage();
 
-      port.postMessage({ type: "closed", state });
+      bpWindow.syncToStorage(state);
     },
     true
   );

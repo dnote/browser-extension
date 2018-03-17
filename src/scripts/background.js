@@ -10,14 +10,11 @@ function filterState(state) {
   };
 }
 
-chrome.runtime.onConnect.addListener(function(port) {
-  port.onMessage.addListener(function(request) {
-    if (request.type === "closed") {
-      const { state } = request;
-
-      chrome.storage.sync.set({ state: filterState(state) }, () => {
-        console.log("persisted");
-      });
-    }
+function syncToStorage(state) {
+  chrome.storage.sync.set({ state: filterState(state) }, () => {
+    console.log("synced");
   });
-});
+}
+
+// expose functions
+window.syncToStorage = syncToStorage;
