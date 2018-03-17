@@ -1,4 +1,5 @@
 import React from "react";
+import { findDOMNode } from "react-dom";
 
 import Link from "./Link";
 

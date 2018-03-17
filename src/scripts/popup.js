@@ -10,7 +10,15 @@ import App from "./components/App";
 
 const port = chrome.runtime.connect();
 
+const appContainer = document.getElementById("app");
+
 chrome.storage.sync.get("state", items => {
+  if (chrome.runtime.lastError) {
+    appContainer.innerText = `Failed to retrieve previous app state ${chrome
+      .runtime.lastError.message}`;
+    return;
+  }
+
   let initialState;
 
   const prevState = items.state;
@@ -29,7 +37,12 @@ chrome.storage.sync.get("state", items => {
     <Provider store={store}>
       <App />
     </Provider>,
-    document.getElementById("app")
+    appContainer,
+    () => {
+      // On Chrome, popup window size is kept at minimum if app render is delayed
+      // Therefore add minimum dimension to body until app is rendered
+      document.getElementsByTagName("body")[0].className = "";
+    }
   );
 
   // persist state on popup close
