@@ -13,7 +13,7 @@ body {
   font-size: 1.6rem;
 
   &.pending {
-    height: 219px;
+    height: 257px;
     width: $width;
   }
 }
@@ -38,6 +38,16 @@ main {
 .message {
   color: #2cae2c;
   margin-bottom: 6px;
+}
+
+.alert {
+  &.error {
+    padding: 10px 9px;
+    font-size: 1.4rem;
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
 }
 
 .menu {

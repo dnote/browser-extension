@@ -19,12 +19,10 @@ export function createNote(apiKey, bookName, content) {
       content
     };
 
-    post(`${config.apiEndpoint}/v1/notes`, payload, {
+    return post(`${config.apiEndpoint}/v1/notes`, payload, {
       headers: {
         Authorization: apiKey
       }
-    }).catch(err => {
-      console.log("error creating note", err);
     });
   };
 }

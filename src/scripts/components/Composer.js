@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import classnames from "classnames";
 
 import BookSelector from "./BookSelector";
+import Error from "./Error";
 
 import { updateDraftContent, createNote } from "../actions/composer";
 import { fetchBooks, selectBook, addBook } from "../actions/books";
@@ -13,7 +14,8 @@ class Composer extends React.Component {
     super(props);
 
     this.state = {
-      contentFocused: false
+      contentFocused: false,
+      submitting: false
     };
   }
 
@@ -39,6 +41,24 @@ class Composer extends React.Component {
     }
   };
 
+  handleSubmit = e => {
+    e.preventDefault();
+
+    const { doCreateNote, settings, content } = this.props;
+
+    this.setState({ submitting: true }, () => {
+      const currentBook = this.getCurrentBook();
+
+      doCreateNote(settings.apiKey, currentBook.label, content)
+        .then(() => {
+          this.setState({ errorMsg: "", submitting: false });
+        })
+        .catch(e => {
+          this.setState({ errorMsg: e.message, submitting: false });
+        });
+    });
+  };
+
   focusInput = () => {
     const currentBook = this.getCurrentBook();
 
@@ -58,16 +78,6 @@ class Composer extends React.Component {
 
     this.contentEl.focus();
     this.contentEl.setSelectionRange(len, len);
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-
-    const { doCreateNote, settings, content } = this.props;
-
-    const currentBook = this.getCurrentBook();
-
-    doCreateNote(settings.apiKey, currentBook.label, content);
   };
 
   getCurrentBook = () => {
@@ -100,7 +110,7 @@ class Composer extends React.Component {
       doSelectBook,
       doAddBook
     } = this.props;
-    const { contentFocused } = this.state;
+    const { contentFocused, errorMsg, submitting } = this.state;
 
     const currentBook = this.getCurrentBook();
 
@@ -108,6 +118,8 @@ class Composer extends React.Component {
 
     return (
       <div className="composer">
+        {errorMsg && <Error message={errorMsg} />}
+
         <form onSubmit={this.handleSubmit} className="form">
           <BookSelector
             books={books}
@@ -144,7 +156,12 @@ class Composer extends React.Component {
             </div>
           </div>
 
-          <input type="submit" value="Save" className="submit-button" />
+          <input
+            type="submit"
+            value="Save"
+            className="submit-button"
+            disabled={submitting}
+          />
         </form>
       </div>
     );
