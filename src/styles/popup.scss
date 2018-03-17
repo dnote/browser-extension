@@ -151,20 +151,30 @@ main {
 
   .content-container {
     position: relative;
+    height: 148px;
   }
 
   .content {
     border: none;
     resize: none;
-    height: 148px;
+    height: 100%;
+    width: 100%;
     padding: 11px 11px 18px 11px;
     font-size: 1.5rem;
     margin-bottom: 0;
-    width: 100%;
     box-sizing: border-box;
+
+    //Chrome
+    border: 1px solid #e2e2e2;
+    border-top: 0;
+
+    &::placeholder {
+      color: #aaa;
+    }
 
     &:focus {
       box-shadow: inset 0px 0px 3px #c0c0c0;
+      outline: none; //chrome
     }
   }
 
@@ -187,6 +197,7 @@ main {
     border-radius: 0;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     font-weight: 400;
     line-height: 1.25;
     text-align: center;
@@ -203,5 +214,26 @@ main {
     padding: 6px 0;
     border-radius: 0;
     border: none;
+
+    &:hover {
+      color: #ffffff;
+      background-color: #323642;
+      box-shadow: 0px 0px 4px 2px #cacaca;
+    }
+  }
+
+  .book-value {
+    display: flex;
+    align-items: center;
+
+    .book-icon {
+      margin-right: 9px;
+      margin-top: 1px;
+    }
+  }
+
+  .book-option {
+    font-size: 1.4rem;
+    padding: 5px 8px;
   }
 }

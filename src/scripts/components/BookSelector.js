@@ -2,6 +2,8 @@ import React from "react";
 import { Creatable } from "react-select";
 import cloneDeep from "lodash/cloneDeep";
 
+import BookIcon from "./BookIcon";
+
 export default class BookSelector extends React.Component {
   getCurrentBook = () => {
     const { books, currentBookId } = this.props;
@@ -85,14 +87,20 @@ export default class BookSelector extends React.Component {
         }}
         valueRenderer={option => {
           return (
-            <div>
-              {option.isNew && "newbook"}
-              {option.label}
+            <div className="book-value">
+              <BookIcon width={14} height={14} className="book-icon" />
+              <div className="book-label">
+                {option.label}
+              </div>
             </div>
           );
         }}
         promptTextCreator={label => {
           return `Add a new book ${label}`;
+        }}
+        optionClassName="book-option"
+        optionRenderer={option => {
+          return option.label;
         }}
       />
     );

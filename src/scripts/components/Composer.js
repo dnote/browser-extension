@@ -140,11 +140,11 @@ class Composer extends React.Component {
             <div
               className={classnames("shortcut-hint", { shown: contentFocused })}
             >
-              Shift + Enter to submit
+              Shift + Enter to save
             </div>
           </div>
 
-          <input type="submit" value="Write" className="submit-button" />
+          <input type="submit" value="Save" className="submit-button" />
         </form>
       </div>
     );
