@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import classnames from "classnames";
 
 import BookSelector from "./BookSelector";
 
@@ -8,6 +9,14 @@ import { updateDraftContent, createNote } from "../actions/composer";
 import { fetchBooks, selectBook, addBook } from "../actions/books";
 
 class Composer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      contentFocused: false
+    };
+  }
+
   componentDidMount() {
     const { settings, doFetchBooks } = this.props;
     const { apiKey } = settings;
@@ -15,7 +24,20 @@ class Composer extends React.Component {
     doFetchBooks(apiKey);
 
     this.focusInput();
+
+    window.addEventListener("keydown", this.handleSubmitShortcut);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.handleSubmitShortcut);
+  }
+
+  handleSubmitShortcut = e => {
+    // Shift + Enter
+    if (e.shiftKey && e.keyCode === 13) {
+      this.handleSubmit(e);
+    }
+  };
 
   focusInput = () => {
     const currentBook = this.getCurrentBook();
@@ -62,6 +84,14 @@ class Composer extends React.Component {
     return {};
   };
 
+  handleContentFocus = () => {
+    this.setState({ contentFocused: true });
+  };
+
+  handleContentBlur = () => {
+    this.setState({ contentFocused: false });
+  };
+
   render() {
     const {
       books,
@@ -70,6 +100,8 @@ class Composer extends React.Component {
       doSelectBook,
       doAddBook
     } = this.props;
+    const { contentFocused } = this.state;
+
     const currentBook = this.getCurrentBook();
 
     const currentBookId = currentBook.id;
@@ -88,19 +120,29 @@ class Composer extends React.Component {
             }}
           />
 
-          <textarea
-            className="content"
-            placeholder="What did you learn?"
-            onChange={e => {
-              const val = e.target.value;
+          <div className="content-container">
+            <textarea
+              className="content"
+              placeholder="What did you learn?"
+              onChange={e => {
+                const val = e.target.value;
 
-              doUpdateDraftContent(val);
-            }}
-            value={content}
-            ref={el => {
-              this.contentEl = el;
-            }}
-          />
+                doUpdateDraftContent(val);
+              }}
+              value={content}
+              ref={el => {
+                this.contentEl = el;
+              }}
+              onFocus={this.handleContentFocus}
+              onBlur={this.handleContentBlur}
+            />
+
+            <div
+              className={classnames("shortcut-hint", { shown: contentFocused })}
+            >
+              Shift + Enter to submit
+            </div>
+          </div>
 
           <input type="submit" value="Write" className="submit-button" />
         </form>
