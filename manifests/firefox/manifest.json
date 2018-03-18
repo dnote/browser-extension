@@ -1,6 +1,6 @@
 {
   "name": "Dnote",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Capture your coding knowledge without leaving the browser.",
   "applications": {
     "gecko": {
