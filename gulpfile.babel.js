@@ -113,7 +113,7 @@ gulp.task("babel", ["manifest"], () => {
   return es.merge.apply(null, tasks);
 });
 
-gulp.task("clean", del.bind(null, [".tmp", "dist"]));
+gulp.task("clean", del.bind(null, [".tmp", `dist/${target}`]));
 
 gulp.task("watch", ["html", "lint", "babel", "styles", "images"], () => {
   $.livereload.listen();
@@ -137,13 +137,14 @@ gulp.task("size", () => {
   return gulp.src("dist/**/*").pipe($.size({ title: "build", gzip: true }));
 });
 
-// gulp.task("package", function() {
-//   var manifest = require("./dist/manifest.json");
-//   return gulp
-//     .src("dist/**")
-//     .pipe($.zip("dnote-" + manifest.version + ".zip"))
-//     .pipe(gulp.dest("package"));
-// });
+gulp.task("package", function() {
+  let manifest = require(`./dist/${target}/manifest.json`);
+
+  return gulp
+    .src(`dist/${target}/**`)
+    .pipe($.zip("dnote-" + manifest.version + ".zip"))
+    .pipe(gulp.dest(`package/${target}`));
+});
 
 gulp.task("manifest", () => {
   return gulp

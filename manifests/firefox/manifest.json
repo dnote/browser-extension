@@ -4,7 +4,7 @@
   "description": "Capture your coding knowledge without leaving the browser.",
   "applications": {
     "gecko": {
-      "id": "addon@example.com",
+      "id": "sung@dnote.io",
       "strict_min_version": "42.0"
     }
   },
