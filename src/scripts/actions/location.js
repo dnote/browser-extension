@@ -1,8 +1,8 @@
 export const NAVIGATE = "location/NAVIGATE";
 
-export function navigate(path) {
+export function navigate(path, state) {
   return {
     type: NAVIGATE,
-    data: { path }
+    data: { path, state }
   };
 }

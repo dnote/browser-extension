@@ -1,7 +1,8 @@
 import { NAVIGATE } from "../actions/location";
 
 const initialState = {
-  path: "/"
+  path: "/",
+  state: {}
 };
 
 export default function(state = initialState, action) {
@@ -9,7 +10,8 @@ export default function(state = initialState, action) {
     case NAVIGATE:
       return {
         ...state,
-        path: action.data.path
+        path: action.data.path,
+        state: action.data.state || {}
       };
     default:
       return state;

@@ -5,6 +5,7 @@ import classnames from "classnames";
 import Header from "./Header";
 import Home from "./Home";
 import Settings from "./Settings";
+import Success from "./Success";
 import Composer from "./Composer";
 import Menu from "./Menu";
 
@@ -30,6 +31,8 @@ class App extends React.Component {
     switch (path) {
       case "/settings":
         return <Settings />;
+      case "/success":
+        return <Success />;
       case "/":
         if (loggedIn) {
           return <Composer />;

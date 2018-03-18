@@ -8,6 +8,7 @@ import Error from "./Error";
 
 import { updateDraftContent, createNote } from "../actions/composer";
 import { fetchBooks, selectBook, addBook } from "../actions/books";
+import { navigate } from "../actions/location";
 
 class Composer extends React.Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class Composer extends React.Component {
   }
 
   handleSubmitShortcut = e => {
+    console.log("123");
     // Shift + Enter
     if (e.shiftKey && e.keyCode === 13) {
       this.handleSubmit(e);
@@ -42,16 +44,33 @@ class Composer extends React.Component {
   };
 
   handleSubmit = e => {
+    console.log("456");
     e.preventDefault();
 
-    const { doCreateNote, settings, content } = this.props;
+    const {
+      doCreateNote,
+      doSelectBook,
+      doUpdateDraftContent,
+      doNavigate,
+      settings,
+      content
+    } = this.props;
 
     this.setState({ submitting: true }, () => {
       const currentBook = this.getCurrentBook();
 
-      doCreateNote(settings.apiKey, currentBook.label, content)
+      // Currently Dnote does not support multiline notes
+      const formattedContent = content.replace(/\r?\n|\r/g, "");
+
+      doCreateNote(settings.apiKey, currentBook.label, formattedContent)
         .then(() => {
+          // clear the composer state
           this.setState({ errorMsg: "", submitting: false });
+          doSelectBook();
+          doUpdateDraftContent("");
+
+          // navigate
+          doNavigate("/success", { bookName: currentBook.label });
         })
         .catch(e => {
           this.setState({ errorMsg: e.message, submitting: false });
@@ -184,7 +203,8 @@ function mapDispatchToProps(dispatch) {
         doSelectBook: selectBook,
         doAddBook: addBook,
         doUpdateDraftContent: updateDraftContent,
-        doCreateNote: createNote
+        doCreateNote: createNote,
+        doNavigate: navigate
       },
       dispatch
     )

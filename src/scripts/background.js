@@ -1,6 +1,12 @@
+// filterState filters the given state to be suitable for reuse upon next app
+// load
 function filterState(state) {
   return {
     ...state,
+    location: {
+      ...state.location,
+      path: "/"
+    },
     books: {
       ...state.books,
       items: state.books.items.filter(item => {
