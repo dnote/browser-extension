@@ -20,9 +20,12 @@ class Success extends React.Component {
 
     const { doNavigate } = this.props;
 
-    // Enter key
     if (e.keyCode === 13) {
+      // Enter key
       doNavigate("/");
+    } else if (e.keyCode === 27) {
+      // ESC key
+      window.close();
     }
   };
 

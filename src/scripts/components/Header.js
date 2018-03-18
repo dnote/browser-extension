@@ -7,7 +7,7 @@ import CloseIcon from "./CloseIcon";
 export default ({ currentPath, toggleMenu, isShowingMenu }) => {
   return (
     <header className="header">
-      <Link to="/" className="logo-link">
+      <Link to="/" className="logo-link" tabIndex="-1">
         <img src="images/dnote-black.png" alt="dnote" className="logo" />
       </Link>
 
@@ -19,6 +19,7 @@ export default ({ currentPath, toggleMenu, isShowingMenu }) => {
 
           toggleMenu();
         }}
+        tabIndex="-1"
       >
         {isShowingMenu ? <CloseIcon /> : <MenuToggleIcon />}
       </a>

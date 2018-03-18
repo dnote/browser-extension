@@ -6,7 +6,11 @@ import classnames from "classnames";
 import BookSelector from "./BookSelector";
 import Error from "./Error";
 
-import { updateDraftContent, createNote } from "../actions/composer";
+import {
+  updateDraftContent,
+  createNote,
+  createBook
+} from "../actions/composer";
 import { fetchBooks, selectBook, addBook } from "../actions/books";
 import { navigate } from "../actions/location";
 
@@ -35,8 +39,21 @@ class Composer extends React.Component {
     window.removeEventListener("keydown", this.handleSubmitShortcut);
   }
 
+  getCurrentBook = () => {
+    const { books } = this.props;
+
+    for (let i = 0; i < books.length; i++) {
+      const book = books[i];
+
+      if (book.selected) {
+        return book;
+      }
+    }
+
+    return {};
+  };
+
   handleSubmitShortcut = e => {
-    console.log("123");
     // Shift + Enter
     if (e.shiftKey && e.keyCode === 13) {
       this.handleSubmit(e);
@@ -44,11 +61,11 @@ class Composer extends React.Component {
   };
 
   handleSubmit = e => {
-    console.log("456");
     e.preventDefault();
 
     const {
       doCreateNote,
+      doCreateBook,
       doSelectBook,
       doUpdateDraftContent,
       doNavigate,
@@ -59,18 +76,31 @@ class Composer extends React.Component {
     this.setState({ submitting: true }, () => {
       const currentBook = this.getCurrentBook();
 
-      // Currently Dnote does not support multiline notes
-      const formattedContent = content.replace(/\r?\n|\r/g, "");
+      let beforeHook;
+      if (currentBook.isNew) {
+        beforeHook = doCreateBook(settings.apiKey, currentBook.label);
+      } else {
+        beforeHook = Promise.resolve();
+      }
 
-      doCreateNote(settings.apiKey, currentBook.label, formattedContent)
+      beforeHook
         .then(() => {
-          // clear the composer state
-          this.setState({ errorMsg: "", submitting: false });
-          doSelectBook();
-          doUpdateDraftContent("");
+          // Currently Dnote does not support multiline notes
+          const formattedContent = content.replace(/\r?\n|\r/g, "");
 
-          // navigate
-          doNavigate("/success", { bookName: currentBook.label });
+          return doCreateNote(
+            settings.apiKey,
+            currentBook.label,
+            formattedContent
+          ).then(() => {
+            // clear the composer state
+            this.setState({ errorMsg: "", submitting: false });
+            doSelectBook();
+            doUpdateDraftContent("");
+
+            // navigate
+            doNavigate("/success", { bookName: currentBook.label });
+          });
         })
         .catch(e => {
           this.setState({ errorMsg: e.message, submitting: false });
@@ -97,20 +127,6 @@ class Composer extends React.Component {
 
     this.contentEl.focus();
     this.contentEl.setSelectionRange(len, len);
-  };
-
-  getCurrentBook = () => {
-    const { books } = this.props;
-
-    for (let i = 0; i < books.length; i++) {
-      const book = books[i];
-
-      if (book.selected) {
-        return book;
-      }
-    }
-
-    return {};
   };
 
   handleContentFocus = () => {
@@ -204,6 +220,7 @@ function mapDispatchToProps(dispatch) {
         doAddBook: addBook,
         doUpdateDraftContent: updateDraftContent,
         doCreateNote: createNote,
+        doCreateBook: createBook,
         doNavigate: navigate
       },
       dispatch

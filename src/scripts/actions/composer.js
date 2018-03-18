@@ -21,7 +21,21 @@ export function createNote(apiKey, bookName, content) {
 
     return post(`${config.apiEndpoint}/v1/notes`, payload, {
       headers: {
-        Authorization: apiKey
+        Authorization: apiKey,
+        Version: config.version
+      }
+    });
+  };
+}
+
+export function createBook(apiKey, name) {
+  return dispatch => {
+    const payload = { name };
+
+    return post(`${config.apiEndpoint}/v1/books`, payload, {
+      headers: {
+        Authorization: apiKey,
+        Version: config.version
       }
     });
   };

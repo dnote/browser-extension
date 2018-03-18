@@ -83,8 +83,9 @@ gulp.task("html", ["styles"], () => {
   return gulp.src("src/*.html").pipe(gulp.dest(`dist/${target}`));
 });
 
-gulp.task("babel", () => {
+gulp.task("babel", ["manifest"], () => {
   let files = ["background.js", "contentscript.js", "popup.js"];
+  let manifest = require(`./dist/${target}/manifest.json`);
 
   let tasks = files.map(file => {
     return (
@@ -104,6 +105,7 @@ gulp.task("babel", () => {
             isProduction ? "https://api.dnote.io" : "http://127.0.0.1:5000"
           )
         )
+        .pipe(replace("__VERSION__", manifest.version))
         .pipe(gulp.dest(`dist/${target}/scripts`))
     );
   });
@@ -113,27 +115,23 @@ gulp.task("babel", () => {
 
 gulp.task("clean", del.bind(null, [".tmp", "dist"]));
 
-gulp.task(
-  "watch",
-  ["html", "lint", "babel", "styles", "images", "manifest"],
-  () => {
-    $.livereload.listen();
+gulp.task("watch", ["html", "lint", "babel", "styles", "images"], () => {
+  $.livereload.listen();
 
-    gulp
-      .watch([
-        "src/*.html",
-        "src/scripts/**/*.js",
-        "src/images/**/*",
-        "src/styles/**/*"
-      ])
-      .on("change", $.livereload.reload);
+  gulp
+    .watch([
+      "src/*.html",
+      "src/scripts/**/*.js",
+      "src/images/**/*",
+      "src/styles/**/*"
+    ])
+    .on("change", $.livereload.reload);
 
-    gulp.watch("src/scripts/**/*.js", ["lint", "babel"]);
-    gulp.watch("src/styles/**/*.scss", ["styles"]);
-    gulp.watch("src/*.html", ["html"]);
-    gulp.watch("manifests/**/*.json", ["manifest"]);
-  }
-);
+  gulp.watch("src/scripts/**/*.js", ["lint", "babel"]);
+  gulp.watch("src/styles/**/*.scss", ["styles"]);
+  gulp.watch("src/*.html", ["html"]);
+  gulp.watch("manifests/**/*.json", ["manifest"]);
+});
 
 gulp.task("size", () => {
   return gulp.src("dist/**/*").pipe($.size({ title: "build", gzip: true }));
@@ -155,9 +153,10 @@ gulp.task("manifest", () => {
 
 gulp.task("build", cb => {
   runSequence(
+    "manifest",
     "lint",
     "babel",
-    ["html", "manifest", "extras", "images"],
+    ["html", "extras", "images"],
     "size",
     cb
   );
