@@ -2,6 +2,9 @@
 
 # build_prod.sh builds distributable archive for the addon
 
+# TODO: automate version bump in /manifests/{target}
+# and package.json (although package.json version is not used anywhere)
+
 # clean
 TARGET=chrome gulp clean
 TARGET=firefox gulp clean
