@@ -85,22 +85,17 @@ class Composer extends React.Component {
 
       beforeHook
         .then(() => {
-          // Currently Dnote does not support multiline notes
-          const formattedContent = content.replace(/\r?\n|\r/g, "");
+          return doCreateNote(settings.apiKey, currentBook.label, content).then(
+            () => {
+              // clear the composer state
+              this.setState({ errorMsg: "", submitting: false });
+              doSelectBook();
+              doUpdateDraftContent("");
 
-          return doCreateNote(
-            settings.apiKey,
-            currentBook.label,
-            formattedContent
-          ).then(() => {
-            // clear the composer state
-            this.setState({ errorMsg: "", submitting: false });
-            doSelectBook();
-            doUpdateDraftContent("");
-
-            // navigate
-            doNavigate("/success", { bookName: currentBook.label });
-          });
+              // navigate
+              doNavigate("/success", { bookName: currentBook.label });
+            }
+          );
         })
         .catch(e => {
           this.setState({ errorMsg: e.message, submitting: false });
