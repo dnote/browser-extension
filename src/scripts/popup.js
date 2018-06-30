@@ -48,7 +48,7 @@ chrome.storage.local.get("state", items => {
 
   // persist state on popup close
   window.addEventListener(
-    "unload",
+    "blur",
     function(event) {
       const state = store.getState();
       const bpWindow = chrome.extension.getBackgroundPage();
