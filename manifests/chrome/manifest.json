@@ -1,6 +1,6 @@
 {
   "name": "Dnote",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Capture your coding knowledge without leaving the browser.",
   "icons": {
     "16": "images/iconx16.png",
@@ -16,7 +16,7 @@
     "default_popup": "popup.html"
   },
   "background": {
-    "scripts": ["scripts/background.js"]
+    "scripts": []
   },
   "content_scripts": [],
   "permissions": ["storage"],
