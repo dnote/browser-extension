@@ -12,10 +12,11 @@ const port = chrome.runtime.connect();
 
 const appContainer = document.getElementById("app");
 
-chrome.storage.sync.get("state", items => {
+chrome.storage.local.get("state", items => {
   if (chrome.runtime.lastError) {
-    appContainer.innerText = `Failed to retrieve previous app state ${chrome
-      .runtime.lastError.message}`;
+    appContainer.innerText = `Failed to retrieve previous app state ${
+      chrome.runtime.lastError.message
+    }`;
     return;
   }
 
@@ -47,7 +48,7 @@ chrome.storage.sync.get("state", items => {
 
   // persist state on popup close
   window.addEventListener(
-    "unload",
+    "blur",
     function(event) {
       const state = store.getState();
       const bpWindow = chrome.extension.getBackgroundPage();
