@@ -34,7 +34,10 @@ gulp.task("extras", () => {
 
 function lint(files, options) {
   return () => {
-    return gulp.src(files).pipe($.eslint(options)).pipe($.eslint.format());
+    return gulp
+      .src(files)
+      .pipe($.eslint(options))
+      .pipe($.eslint.format());
   };
 }
 
@@ -84,7 +87,7 @@ gulp.task("html", ["styles"], () => {
 });
 
 gulp.task("babel", ["manifest"], () => {
-  let files = ["background.js", "contentscript.js", "popup.js"];
+  let files = ["contentscript.js", "popup.js"];
   let manifest = require(`./dist/${target}/manifest.json`);
 
   let tasks = files.map(file => {
