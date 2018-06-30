@@ -17,7 +17,7 @@ function filterState(state) {
 }
 
 function syncToStorage(state) {
-  chrome.storage.sync.set({ state: filterState(state) }, () => {
+  chrome.storage.local.set({ state: filterState(state) }, () => {
     console.log("synced");
   });
 }
