@@ -1,3 +1,4 @@
+import fs from "fs";
 import gulp from "gulp";
 import gulpLoadPlugins from "gulp-load-plugins";
 import del from "del";
@@ -11,7 +12,7 @@ import gulpif from "gulp-if";
 const $ = gulpLoadPlugins();
 
 const target = process.env.TARGET || "firefox";
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV === "PRODUCTION";
 
 gulp.task("extras", () => {
   return gulp
@@ -150,8 +151,11 @@ gulp.task("package", function() {
 });
 
 gulp.task("manifest", () => {
+  const pkg = JSON.parse(fs.readFileSync("./package.json"));
+
   return gulp
     .src(`manifests/${target}/manifest.json`)
+    .pipe(replace("__VERSION__", pkg.version))
     .pipe(gulp.dest(`dist/${target}`));
 });
 
