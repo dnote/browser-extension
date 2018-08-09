@@ -88,7 +88,7 @@ gulp.task("html", ["styles"], () => {
 });
 
 gulp.task("babel", ["manifest"], () => {
-  let files = ["contentscript.js", "popup.js"];
+  let files = ["popup.js"];
   let manifest = require(`./dist/${target}/manifest.json`);
 
   let tasks = files.map(file => {
