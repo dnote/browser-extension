@@ -214,19 +214,19 @@ kbd {
   font-size: 1.4rem;
   padding: 5px 8px;
 }
+
 .success-page {
   text-align: center;
   padding: 21px 0;
 }
 .success-page .key-list {
+  display: inline-block;
   list-style: none;
   padding-left: 0;
   margin-bottom: 0;
 }
 .success-page .key-item {
   display: flex;
-  align-items: center;
-  justify-content: center;
 }
 .success-page .key-item:not(:first-child) {
   margin-top: 8px;

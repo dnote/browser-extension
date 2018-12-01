@@ -1,12 +1,20 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Error from "./Error";
 
 import BookIcon from "./BookIcon";
 
 import { navigate } from "../actions/location";
 
 class Success extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      errorMsg: ''
+    };
+  }
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeydown);
   }
@@ -18,7 +26,7 @@ class Success extends React.Component {
   handleKeydown = e => {
     e.preventDefault();
 
-    const { doNavigate } = this.props;
+    const { doNavigate, locationState } = this.props;
 
     if (e.keyCode === 13) {
       // Enter key
@@ -26,30 +34,52 @@ class Success extends React.Component {
     } else if (e.keyCode === 27) {
       // ESC key
       window.close();
+    } else if (e.keyCode === 66) {
+      // b key
+      const { noteUUID } = locationState;
+      const url = `__WEB_URL__/notes/${noteUUID}`;
+
+      chrome.tabs.create({ url }).then(() => {
+        window.close();
+      }).catch(err => {
+        this.setState({ errorMsg: err });
+      });
     }
   };
 
   render() {
     const { locationState } = this.props;
+    const { errorMsg } = this.state;
     const { bookName } = locationState;
 
     return (
-      <div className="success-page">
-        <BookIcon width={20} height={20} className="book-icon" />
+      <Fragment>
+        {errorMsg && <Error message={errorMsg} />}
 
-        <h1 className="heading">
-          Saved to {bookName}
-        </h1>
-        <ul className="key-list">
-          <li className="key-item">
-            <kbd className="key">Enter</kbd>{" "}
-            <div className="key-desc">Go back</div>
-          </li>
-          <li className="key-item">
-            <kbd className="key">ESC</kbd> <div className="key-desc">Close</div>
-          </li>
-        </ul>
-      </div>
+        <div className="success-page">
+          <div>
+            <BookIcon width={20} height={20} className="book-icon" />
+
+            <h1 className="heading">
+              Saved to {bookName}
+            </h1>
+          </div>
+
+          <ul className="key-list">
+            <li className="key-item">
+              <kbd className="key">Enter</kbd>{" "}
+              <div className="key-desc">Go back</div>
+            </li>
+            <li className="key-item">
+              <kbd className="key">b</kbd>{" "}
+              <div className="key-desc">Open in browser</div>
+            </li>
+            <li className="key-item">
+              <kbd className="key">ESC</kbd> <div className="key-desc">Close</div>
+            </li>
+          </ul>
+        </div>
+      </Fragment>
     );
   }
 }

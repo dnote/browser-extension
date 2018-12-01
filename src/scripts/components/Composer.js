@@ -88,14 +88,17 @@ class Composer extends React.Component {
       beforeHook
         .then((bookUUID) => {
           return doCreateNote(settings.apiKey, bookUUID, content).then(
-            () => {
+            (resp) => {
               // clear the composer state
               this.setState({ errorMsg: "", submitting: false });
               doSelectBook();
               doUpdateDraftContent("");
 
               // navigate
-              doNavigate("/success", { bookName: currentBook.label });
+              doNavigate("/success", {
+                bookName: currentBook.label,
+                noteUUID: resp.result.uuid
+              });
             }
           );
         })
@@ -148,6 +151,13 @@ class Composer extends React.Component {
 
     const currentBookUUID = currentBook.uuid;
 
+    let submitBtnText;
+    if (submitting) {
+      submitBtnText = 'Saving...';
+    } else {
+      submitBtnText = 'Save';
+    }
+
     return (
       <div className="composer">
         {errorMsg && <Error message={errorMsg} />}
@@ -190,7 +200,7 @@ class Composer extends React.Component {
 
           <input
             type="submit"
-            value="Save"
+            value={submitBtnText}
             className="submit-button"
             disabled={submitting}
           />

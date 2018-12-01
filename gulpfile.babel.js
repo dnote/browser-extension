@@ -99,6 +99,12 @@ gulp.task("babel", ["manifest"], () => {
             isProduction ? "https://api.dnote.io" : "http://127.0.0.1:5000"
           )
         )
+        .pipe(
+          replace(
+            "__WEB_URL__",
+            isProduction ? "https://dnote.io" : "http://127.0.0.1:3000"
+          )
+        )
         .pipe(replace("__VERSION__", manifest.version))
         .pipe(gulp.dest(`dist/${target}/scripts`))
     );
