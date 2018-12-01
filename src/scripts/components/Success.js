@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Error from "./Error";
+import ext from "../utils/ext";
+import config from "../utils/config";
 
 import BookIcon from "./BookIcon";
 
@@ -37,12 +39,12 @@ class Success extends React.Component {
     } else if (e.keyCode === 66) {
       // b key
       const { noteUUID } = locationState;
-      const url = `__WEB_URL__/notes/${noteUUID}`;
+      const url = `${config.webUrl}/notes/${noteUUID}`;
 
-      chrome.tabs.create({ url }).then(() => {
+      ext.tabs.create({ url }).then(() => {
         window.close();
       }).catch(err => {
-        this.setState({ errorMsg: err });
+        this.setState({ errorMsg: err.message });
       });
     }
   };

@@ -28,6 +28,7 @@ class Composer extends React.Component {
     const { settings, doFetchBooks } = this.props;
     const { apiKey } = settings;
 
+    console.log('fetching...')
     doFetchBooks(apiKey);
 
     this.focusInput();

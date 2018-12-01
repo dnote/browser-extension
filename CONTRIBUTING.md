@@ -8,8 +8,8 @@ Here are useful commands.
 
 ## Developing locally
 
-* `TARGET=firefox ./node_modules/.bin/gulp watch`
-* `TARGET=chrome ./node_modules/.bin/gulp watch`
+* `npm run watch-firefox`
+* `npm run watch-chrome`
 
 ## Releasing
 
