@@ -144,7 +144,7 @@ class Composer extends React.Component {
 
     const currentBook = this.getCurrentBook();
 
-    const currentBookId = currentBook.id;
+    const currentBookUUID = currentBook.uuid;
 
     return (
       <div className="composer">
@@ -153,7 +153,7 @@ class Composer extends React.Component {
         <form onSubmit={this.handleSubmit} className="form">
           <BookSelector
             books={books}
-            currentBookId={currentBookId}
+            currentBookUUID={currentBookUUID}
             onChange={doSelectBook}
             onBlur={this.focusContent}
             onAddBook={doAddBook}
