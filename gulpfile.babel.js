@@ -1,13 +1,13 @@
-import fs from "fs";
-import gulp from "gulp";
-import gulpLoadPlugins from "gulp-load-plugins";
-import del from "del";
-import runSequence from "run-sequence";
-import replace from "gulp-replace";
-import es from "event-stream";
-import source from "vinyl-source-stream";
-import browserify from "browserify";
-import gulpif from "gulp-if";
+const fs = require("fs");
+const gulp = require("gulp");
+const gulpLoadPlugins = require("gulp-load-plugins");
+const del = require("del");
+const runSequence = require("run-sequence");
+const replace = require("gulp-replace");
+const es = require("event-stream");
+const source = require("vinyl-source-stream");
+const browserify = require("browserify");
+const gulpif = require("gulp-if");
 
 const $ = gulpLoadPlugins();
 
@@ -23,7 +23,6 @@ gulp.task("extras", () => {
         "!src/scripts.babel",
         "!src/*.json",
         "!src/*.html",
-        "!src/styles.scss"
       ],
       {
         base: "app",
@@ -69,17 +68,7 @@ gulp.task("images", () => {
 
 gulp.task("styles", () => {
   return gulp
-    .src("src/styles/*.scss")
-    .pipe($.plumber())
-    .pipe(
-      $.sass
-        .sync({
-          outputStyle: "expanded",
-          precision: 10,
-          includePaths: ["."]
-        })
-        .on("error", $.sass.logError)
-    )
+    .src("src/styles/*.css")
     .pipe(gulp.dest(`dist/${target}/styles`));
 });
 
@@ -98,7 +87,8 @@ gulp.task("babel", ["manifest"], () => {
         debug: true
       })
         .transform("babelify", {
-          presets: ["es2015", "es2017", "stage-0", "react"]
+          presets: ["@babel/preset-env", "@babel/preset-react"],
+          plugins: ["@babel/plugin-proposal-class-properties"]
         })
         .bundle()
         .pipe(source(file))
@@ -132,7 +122,6 @@ gulp.task("watch", ["html", "lint", "babel", "styles", "images"], () => {
     .on("change", $.livereload.reload);
 
   gulp.watch("src/scripts/**/*.js", ["lint", "babel"]);
-  gulp.watch("src/styles/**/*.scss", ["styles"]);
   gulp.watch("src/*.html", ["html"]);
   gulp.watch("manifests/**/*.json", ["manifest"]);
 });
