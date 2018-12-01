@@ -78,14 +78,16 @@ class Composer extends React.Component {
 
       let beforeHook;
       if (currentBook.isNew) {
-        beforeHook = doCreateBook(settings.apiKey, currentBook.label);
+        beforeHook = doCreateBook(settings.apiKey, currentBook.label).then(resp => {
+          return resp.book.uuid;
+        });
       } else {
-        beforeHook = Promise.resolve();
+        beforeHook = Promise.resolve(currentBook.uuid);
       }
 
       beforeHook
-        .then(() => {
-          return doCreateNote(settings.apiKey, currentBook.label, content).then(
+        .then((bookUUID) => {
+          return doCreateNote(settings.apiKey, bookUUID, content).then(
             () => {
               // clear the composer state
               this.setState({ errorMsg: "", submitting: false });

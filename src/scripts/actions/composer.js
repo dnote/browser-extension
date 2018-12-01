@@ -12,10 +12,10 @@ export function updateDraftContent(content) {
   };
 }
 
-export function createNote(apiKey, bookName, content) {
+export function createNote(apiKey, bookUUID, content) {
   return dispatch => {
     const payload = {
-      book_name: bookName,
+      book_uuid: bookUUID,
       content
     };
 
