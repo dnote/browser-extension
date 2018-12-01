@@ -23,11 +23,11 @@ function receiveBooks(books) {
   };
 }
 
-export function selectBook(bookId) {
+export function selectBook(uuid) {
   return {
     type: SELECT,
     data: {
-      bookId
+      uuid
     }
   };
 }
@@ -45,7 +45,7 @@ export function removeBook(bookId) {
   return {
     type: REMOVE,
     data: {
-      bookId
+      uuid
     }
   };
 }

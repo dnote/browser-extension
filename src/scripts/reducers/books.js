@@ -77,7 +77,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         items: state.items.map(item => {
-          const selected = item.id === action.data.bookId;
+          const selected = item.uuid === action.data.uuid;
 
           return {
             ...item,
@@ -95,7 +95,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         items: state.items.filter(item => {
-          return item.id !== action.data.bookId;
+          return item.uuid !== action.data.uuid;
         })
       };
     }

@@ -2,10 +2,14 @@
 
 Here are useful commands.
 
+## Set up
+
+* `npm install` to install dependencies.
+
 ## Developing locally
 
-* `TARGET=firefox gulp watch`
-* `TARGET=chrome gulp watch`
+* `TARGET=firefox ./node_modules/.bin/gulp watch`
+* `TARGET=chrome ./node_modules/.bin/gulp watch`
 
 ## Releasing
 
