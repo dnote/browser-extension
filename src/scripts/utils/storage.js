@@ -1,3 +1,5 @@
+import ext from "./ext";
+
 const stateKey = "state";
 
 // filterState filters the given state to be suitable for reuse upon next app
@@ -26,19 +28,19 @@ function parseStorageItem(item) {
   return JSON.parse(item);
 }
 
-// saveState writes the given state to chrome.storage
+// saveState writes the given state to storage
 export function saveState(state) {
   const filtered = filterState(state);
   const serialized = JSON.stringify(filtered);
 
-  chrome.storage.local.set({ [stateKey]: serialized }, () => {
+  ext.storage.local.set({ [stateKey]: serialized }, () => {
     console.log("synced state");
   });
 }
 
-// loadState loads and parses serialized state stored in chrome.storage
+// loadState loads and parses serialized state stored in ext.storage
 export function loadState(done) {
-  chrome.storage.local.get("state", items => {
+  ext.storage.local.get("state", items => {
     const parsed = {
       ...items,
       state: parseStorageItem(items.state)

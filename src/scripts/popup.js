@@ -9,15 +9,16 @@ import rootReducer from "./reducers";
 import { debounce } from "./utils/perf";
 import { loadState, saveState } from "./utils/storage";
 import App from "./components/App";
+import ext from "./utils/ext";
 
-const port = chrome.runtime.connect();
+const port = ext.runtime.connect();
 
 const appContainer = document.getElementById("app");
 
 loadState(items => {
-  if (chrome.runtime.lastError) {
+  if (ext.runtime.lastError) {
     appContainer.innerText = `Failed to retrieve previous app state ${
-      chrome.runtime.lastError.message
+      ext.runtime.lastError.message
     }`;
     return;
   }

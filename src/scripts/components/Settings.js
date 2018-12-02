@@ -53,7 +53,7 @@ class Settings extends React.Component {
           />
 
           <p className="hint">
-            Sign up <a href="https://dnote.io/cloud">here</a> or get it from
+            Sign up <a href="https://dnote.io/pricing">here</a> or get it from
             your profile page.
           </p>
 

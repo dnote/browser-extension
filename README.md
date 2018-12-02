@@ -26,8 +26,9 @@ This extension integrates seamlessly with [Dnote CLI](https://github.com/dnote-i
 
 Write new notes without even moving your hands to the mouse.
 
-* **Ctrl + d** - Open the extension
+* **Ctrl + d** - Open the extension (**Ctrl + Shift + d** on Firefox on Linux).
 * **Shift + Enter** - Save the current note
+* **b** - Open the saved note in the browser
 
 ## License
 

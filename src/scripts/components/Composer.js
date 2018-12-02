@@ -28,6 +28,7 @@ class Composer extends React.Component {
     const { settings, doFetchBooks } = this.props;
     const { apiKey } = settings;
 
+    console.log('fetching...')
     doFetchBooks(apiKey);
 
     this.focusInput();
@@ -78,22 +79,27 @@ class Composer extends React.Component {
 
       let beforeHook;
       if (currentBook.isNew) {
-        beforeHook = doCreateBook(settings.apiKey, currentBook.label);
+        beforeHook = doCreateBook(settings.apiKey, currentBook.label).then(resp => {
+          return resp.book.uuid;
+        });
       } else {
-        beforeHook = Promise.resolve();
+        beforeHook = Promise.resolve(currentBook.uuid);
       }
 
       beforeHook
-        .then(() => {
-          return doCreateNote(settings.apiKey, currentBook.label, content).then(
-            () => {
+        .then((bookUUID) => {
+          return doCreateNote(settings.apiKey, bookUUID, content).then(
+            (resp) => {
               // clear the composer state
               this.setState({ errorMsg: "", submitting: false });
               doSelectBook();
               doUpdateDraftContent("");
 
               // navigate
-              doNavigate("/success", { bookName: currentBook.label });
+              doNavigate("/success", {
+                bookName: currentBook.label,
+                noteUUID: resp.result.uuid
+              });
             }
           );
         })
@@ -144,7 +150,14 @@ class Composer extends React.Component {
 
     const currentBook = this.getCurrentBook();
 
-    const currentBookId = currentBook.id;
+    const currentBookUUID = currentBook.uuid;
+
+    let submitBtnText;
+    if (submitting) {
+      submitBtnText = 'Saving...';
+    } else {
+      submitBtnText = 'Save';
+    }
 
     return (
       <div className="composer">
@@ -153,7 +166,7 @@ class Composer extends React.Component {
         <form onSubmit={this.handleSubmit} className="form">
           <BookSelector
             books={books}
-            currentBookId={currentBookId}
+            currentBookUUID={currentBookUUID}
             onChange={doSelectBook}
             onBlur={this.focusContent}
             onAddBook={doAddBook}
@@ -188,7 +201,7 @@ class Composer extends React.Component {
 
           <input
             type="submit"
-            value="Save"
+            value={submitBtnText}
             className="submit-button"
             disabled={submitting}
           />

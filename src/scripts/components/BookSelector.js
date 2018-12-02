@@ -6,12 +6,12 @@ import BookIcon from "./BookIcon";
 
 export default class BookSelector extends React.Component {
   getCurrentBook = () => {
-    const { books, currentBookId } = this.props;
+    const { books, currentBookUUID } = this.props;
 
     for (let i = 0; i < books.length; i++) {
       const book = books[i];
 
-      if (book.id === currentBookId) {
+      if (book.uuid === currentBookUUID) {
         return book;
       }
     }
@@ -32,7 +32,7 @@ export default class BookSelector extends React.Component {
     for (let i = 0; i < books.length; i++) {
       const book = books[i];
 
-      if (book.id === option.id) {
+      if (book.uuid === option.uuid) {
         return false;
       }
     }
@@ -43,7 +43,7 @@ export default class BookSelector extends React.Component {
   render() {
     const {
       books,
-      currentBookId,
+      currentBookUUID,
       onBlur,
       onChange,
       onAddBook,
@@ -62,7 +62,7 @@ export default class BookSelector extends React.Component {
         autoBlur
         multi={false}
         value={currentOption}
-        valueKey="id"
+        valueKey="uuid"
         placeholder="Choose a book"
         options={options}
         onChange={option => {
@@ -75,7 +75,7 @@ export default class BookSelector extends React.Component {
             onAddBook(option);
           }
 
-          onChange(option.id);
+          onChange(option.uuid);
         }}
         onBlur={onBlur}
         newOptionCreator={({ label, labelKey, valueKey }) => {

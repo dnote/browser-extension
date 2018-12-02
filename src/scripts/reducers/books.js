@@ -32,34 +32,34 @@ export default function(state = initialState, action) {
     case RECEIVE: {
       const { books } = action.data;
 
-      // get ids of deleted books and that of a currently selected book
+      // get uuids of deleted books and that of a currently selected book
       const deletedIds = [];
       const newItems = [];
-      let selectedId = null;
+      let selectedUUID = null;
 
       const booksMap = books.reduce(function(acc, cur) {
-        acc[cur.id] = cur;
+        acc[cur.uuid] = cur;
         return acc;
       }, {});
 
       state.items.forEach(item => {
-        if (!booksMap[item.id] && !item.isNew) {
-          deletedIds.push(item.id);
+        if (!booksMap[item.uuid] && !item.isNew) {
+          deletedIds.push(item.uuid);
         }
         if (item.isNew) {
           newItems.push(item);
         }
         if (item.selected) {
-          selectedId = item.id;
+          selectedUUID = item.uuid;
         }
       });
 
       const items = books
         .filter(item => {
-          return deletedIds.indexOf(item.id) === -1;
+          return deletedIds.indexOf(item.uuid) === -1;
         })
         .map(item => {
-          const selected = selectedId === item.id;
+          const selected = selectedUUID === item.uuid;
 
           return mapItem(item, selected);
         });
@@ -77,7 +77,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         items: state.items.map(item => {
-          const selected = item.id === action.data.bookId;
+          const selected = item.uuid === action.data.uuid;
 
           return {
             ...item,
@@ -95,7 +95,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         items: state.items.filter(item => {
-          return item.id !== action.data.bookId;
+          return item.uuid !== action.data.uuid;
         })
       };
     }
