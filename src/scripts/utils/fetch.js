@@ -1,4 +1,5 @@
 import qs from "qs";
+import config from "./config"
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -18,6 +19,15 @@ function parseJSON(response) {
 }
 
 function request(url, options) {
+  const opts = {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Extension-Version': config.version
+    }
+  }
+
+
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON);
