@@ -5,6 +5,8 @@ import classnames from "classnames";
 
 import BookSelector from "./BookSelector";
 import Error from "./Error";
+import { aes256GcmEncrypt } from '../utils/crypto'
+import { b64ToBuf, utf8ToBuf, bufToB64 } from '../utils/encoding'
 
 import {
   updateDraftContent,
@@ -26,10 +28,9 @@ class Composer extends React.Component {
 
   componentDidMount() {
     const { settings, doFetchBooks } = this.props;
-    const { apiKey } = settings;
 
     console.log('fetching...')
-    doFetchBooks(apiKey);
+    doFetchBooks(settings.sessionKey, settings.cipherKey);
 
     this.focusInput();
 
@@ -74,38 +75,36 @@ class Composer extends React.Component {
       content
     } = this.props;
 
-    this.setState({ submitting: true }, () => {
-      const currentBook = this.getCurrentBook();
+    this.setState({ submitting: true }, async () => {
+      try {
+        const currentBook = this.getCurrentBook();
 
-      let beforeHook;
-      if (currentBook.isNew) {
-        beforeHook = doCreateBook(settings.apiKey, currentBook.label).then(resp => {
-          return resp.book.uuid;
+        let bookUUID;
+        if (currentBook.isNew) {
+          const labelEnc = await aes256GcmEncrypt(b64ToBuf(settings.cipherKey), utf8ToBuf(currentBook.label))
+
+          const resp = await doCreateBook(settings.sessionKey, bufToB64(labelEnc));
+          bookUUID = resp.book.uuid
+        } else {
+          bookUUID = currentBook.uuid;
+        }
+
+        const contentEnc = await aes256GcmEncrypt(b64ToBuf(settings.cipherKey), utf8ToBuf(content))
+        const resp = await doCreateNote(settings.sessionKey, bookUUID, bufToB64(contentEnc))
+
+        // clear the composer state
+        this.setState({ errorMsg: "", submitting: false });
+        doSelectBook();
+        doUpdateDraftContent("");
+
+        // navigate
+        doNavigate("/success", {
+          bookName: currentBook.label,
+          noteUUID: resp.result.uuid
         });
-      } else {
-        beforeHook = Promise.resolve(currentBook.uuid);
+      } catch (e) {
+        this.setState({ errorMsg: e.message, submitting: false });
       }
-
-      beforeHook
-        .then((bookUUID) => {
-          return doCreateNote(settings.apiKey, bookUUID, content).then(
-            (resp) => {
-              // clear the composer state
-              this.setState({ errorMsg: "", submitting: false });
-              doSelectBook();
-              doUpdateDraftContent("");
-
-              // navigate
-              doNavigate("/success", {
-                bookName: currentBook.label,
-                noteUUID: resp.result.uuid
-              });
-            }
-          );
-        })
-        .catch(e => {
-          this.setState({ errorMsg: e.message, submitting: false });
-        });
     });
   };
 

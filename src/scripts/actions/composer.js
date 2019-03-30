@@ -12,29 +12,29 @@ export function updateDraftContent(content) {
   };
 }
 
-export function createNote(apiKey, bookUUID, content) {
+export function createNote(key, bookUUID, content) {
   return dispatch => {
     const payload = {
       book_uuid: bookUUID,
       content
     };
 
-    return post(`${config.apiEndpoint}/v1/notes`, payload, {
+    return post(`${config.apiEndpoint}/v2/notes`, payload, {
       headers: {
-        Authorization: apiKey,
+        Authorization: `Bearer ${key}`,
         Version: config.version
       }
     });
   };
 }
 
-export function createBook(apiKey, name) {
+export function createBook(key, name) {
   return dispatch => {
     const payload = { name };
 
-    return post(`${config.apiEndpoint}/v1/books`, payload, {
+    return post(`${config.apiEndpoint}/v2/books`, payload, {
       headers: {
-        Authorization: apiKey,
+        Authorization: `Bearer ${key}`,
         Version: config.version
       }
     });
