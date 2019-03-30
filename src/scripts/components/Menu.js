@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import Link from "./Link";
 
-export default ({ toggleMenu }) => {
+export default ({ toggleMenu, loggedIn, onLogout }) => {
   return (
     <Fragment>
       <ul className="menu">
@@ -11,11 +11,17 @@ export default ({ toggleMenu }) => {
             Home
           </Link>
         </li>
-        <li>
-          <Link to="/settings" onClick={toggleMenu} className="menu-link">
-            Settings
-          </Link>
-        </li>
+        {loggedIn && (
+          <li>
+            <form onSubmit={e => {
+              e.preventDefault()
+
+              onLogout(toggleMenu)
+            }}>
+              <input type="submit" value="Logout" className="menu-link logout-button"/>
+            </form>
+          </li>
+        )}
       </ul>
 
       <div className="menu-overlay" onClick={toggleMenu} />

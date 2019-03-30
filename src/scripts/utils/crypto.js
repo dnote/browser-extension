@@ -1,7 +1,15 @@
 // module crypto.js provides cryptography operations using the Web Crypto API
 
-import { utf8ToBuf, bufToB64, b64ToBuf, bufToUtf8 } from '../libs/encoding';
-import { PBKDF2, HKDF, SHA256, AES_GCM, AES_GCM_NONCE_SIZE } from './consts';
+import { utf8ToBuf, bufToB64, b64ToBuf, bufToUtf8 } from './encoding';
+
+const AES_GCM = 'AES-GCM';
+const PBKDF2 = 'PBKDF2';
+const HKDF = 'HKDF';
+const SHA256 = 'SHA-256';
+const DEFAULT_KDF_ITERATION = 10000;
+
+// AES_GCM_NONCE_SIZE is the size of the iv, in bytes, of AES in GCM mode
+const AES_GCM_NONCE_SIZE = 12;
 
 function mergeBuffers(buf1, buf2) {
   const buf = new ArrayBuffer(buf1.byteLength + buf2.byteLength);

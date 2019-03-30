@@ -4,18 +4,51 @@ import classnames from "classnames";
 
 import Header from "./Header";
 import Home from "./Home";
-import Settings from "./Settings";
 import Success from "./Success";
 import Composer from "./Composer";
 import Menu from "./Menu";
+import { resetSettings } from "../actions/settings";
+import { post } from "../utils/fetch";
+import config from "../utils/config";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isShowingMenu: false
+      isShowingMenu: false,
+      errorMessage: ''
     };
+  }
+
+  componentDidUpdate() {
+    const { settings, doResetSettings } = this.props;
+
+    // if session is expired, clear it
+    const now = Math.round(new Date().getTime()/1000)
+    if (settings.sessionKey && settings.sessionKeyExpiry < now) {
+      doResetSettings()
+    }
+  }
+
+  handleLogout = async (done = () => null) => {
+    const { settings, doResetSettings } = this.props;
+
+    try {
+      console.log(1);
+      const res = await post(`${config.apiEndpoint}/v1/signout`, {}, {
+        headers: {
+          Authorization: `Bearer ${settings.sessionKey}`
+        }
+      })
+      console.log(2);
+      doResetSettings()
+      done()
+    } catch (e) {
+      this.setState({
+        errorMessage: `Could not log out: ${e.message}`
+      }, done)
+    }
   }
 
   toggleMenu = () => {
@@ -27,10 +60,7 @@ class App extends React.Component {
   };
 
   renderRoutes = (path, loggedIn) => {
-    console.log("rendering", path);
     switch (path) {
-      case "/settings":
-        return <Settings />;
       case "/success":
         return <Success />;
       case "/":
@@ -46,18 +76,30 @@ class App extends React.Component {
 
   render() {
     const { location, settings } = this.props;
-    const { isShowingMenu } = this.state;
+    const { isShowingMenu, errorMessage } = this.state;
 
     const { path } = location;
-    const isLoggedIn = Boolean(settings.apiKey);
+    const isLoggedIn = Boolean(settings.sessionKey);
 
     return (
       <div className="container">
         <Header toggleMenu={this.toggleMenu} isShowingMenu={isShowingMenu} />
 
-        {isShowingMenu && <Menu toggleMenu={this.toggleMenu} />}
+        {isShowingMenu && (
+          <Menu
+            toggleMenu={this.toggleMenu}
+            loggedIn={isLoggedIn}
+            onLogout={this.handleLogout}
+          />
+        )}
 
         <main>
+          {errorMessage && (
+            <div className="alert error">
+              {errorMessage}
+            </div>
+          )}
+
           {this.renderRoutes(path, isLoggedIn)}
         </main>
       </div>
@@ -72,4 +114,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = {
+  doResetSettings: resetSettings
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

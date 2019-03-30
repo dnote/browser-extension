@@ -14,7 +14,11 @@ function checkStatus(response) {
 }
 
 function parseJSON(response) {
-  return response.json();
+  if (response.headers.get('Content-Type') === 'application/json') {
+    return response.json();
+  }
+
+  return Promise.resolve()
 }
 
 function request(url, options) {
