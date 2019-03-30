@@ -8,17 +8,17 @@ export default () => {
     <div className="home">
       <h1 className="greet">Welcome to Dnote</h1>
 
-      <p className="lead">A home for your engineering microlesson</p>
+      <p className="lead">A simple and encrypted notebook</p>
 
-      <Link
-        to="/settings"
-        className="button button-first button-small login-btn"
-      >
-        Login
-      </Link>
+      <form action="">
+        <input type="email" placeholder="your@email.com" />
+        <input type="password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" />
+
+        <input type="submit" value="Login" className="button button-first button-small login-btn" />
+      </form>
 
       <div className="actions">
-        <a href="https://dnote.io/cloud" target="_blank" className="signup">
+        <a href="https://dnote.io/join" target="_blank" className="signup">
           Sign Up
         </a>
       </div>
