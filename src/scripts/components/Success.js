@@ -39,7 +39,7 @@ class Success extends React.Component {
     } else if (e.keyCode === 66) {
       // b key
       const { noteUUID } = locationState;
-      const url = `${config.webUrl}/notes/${noteUUID}`;
+      const url = `${config.webUrl}/app/notes/${noteUUID}`;
 
       ext.tabs.create({ url }).then(() => {
         window.close();

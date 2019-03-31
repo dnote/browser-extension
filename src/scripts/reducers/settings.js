@@ -1,7 +1,9 @@
-import { UPDATE } from "../actions/settings";
+import { UPDATE, RESET } from "../actions/settings";
 
 const initialState = {
-  apiKey: ""
+  sessionKey: '',
+  sessionKeyExpiry: 0,
+  cipherKey: ''
 };
 
 export default function(state = initialState, action) {
@@ -11,6 +13,8 @@ export default function(state = initialState, action) {
         ...state,
         ...action.data.settings
       };
+    case RESET:
+      return initialState;
     default:
       return state;
   }

@@ -8,7 +8,7 @@ export default ({ currentPath, toggleMenu, isShowingMenu }) => {
   return (
     <header className="header">
       <Link to="/" className="logo-link" tabIndex="-1">
-        <img src="images/dnote-black.png" alt="dnote" className="logo" />
+        <img src="images/logo-circle.png" alt="dnote" className="logo" />
       </Link>
 
       <a
