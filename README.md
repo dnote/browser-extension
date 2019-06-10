@@ -14,7 +14,7 @@ Capture your coding wisdom within seconds without leaving the browser.
 * Firefox - https://addons.mozilla.org/addon/dnote
 * Chrome - https://chrome.google.com/webstore/detail/dnote/mcfbfmihbijfaambfbbfcdcfibcjcahi
 
-2. Login with your API key from https://dnote.io
+2. Login with your account from https://dnote.io
 
 ## Overview
 
